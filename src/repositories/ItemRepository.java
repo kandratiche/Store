@@ -1,14 +1,14 @@
 package repositories;
 
 import data.interfaces.IDB;
-import repositories.interfaces.IUserRepository;
+import repositories.interfaces.IItemRepository;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-public class UserRepository implements IUserRepository {
+public class ItemRepository implements IItemRepository {
     private final IDB db;
-    public UserRepository(IDB db) {
+    public ItemRepository(IDB db) {
         this.db = db;
     }
 
