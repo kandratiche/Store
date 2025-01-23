@@ -1,10 +1,12 @@
 package repositories;
 
 import data.interfaces.IDB;
+import models.Item;
 import repositories.interfaces.IItemRepository;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ItemRepository implements IItemRepository {
     private final IDB db;
@@ -12,14 +14,21 @@ public class ItemRepository implements IItemRepository {
         this.db = db;
     }
 
-    public boolean createItem(Item item){
+    @Override
+    public boolean createItem(String name, int amount, double price){
+        return createItem(new Item(name, amount, price));
+    }
+
+    @Override
+    public boolean createItem(Item item) {
+
         Connection conn = null;
-        try{
+        try {
             conn = db.getConnection();
-            String sql = "INSERT INTO items (itemName, amount, price) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO items (name, amount, price) VALUES (?, ?, ?)";
             PreparedStatement st = conn.prepareStatement(sql);
 
-            st.setString(1,item.getItemName());
+            st.setString(1, item.getItemName());
             st.setInt(2, item.getAmount());
             st.setDouble(3, item.getPrice());
             st.execute();
@@ -27,9 +36,9 @@ public class ItemRepository implements IItemRepository {
         } catch (SQLException e) {
             System.out.println("sql error: " + e.getMessage());
         }
+
         return false;
     }
-
 
     @Override
     public Item getItemById(int id){
@@ -46,7 +55,7 @@ public class ItemRepository implements IItemRepository {
 
             if(rs.next()){
                 return new Item(rs.getInt("id"),
-                        rs.getString("itemName"),
+                        rs.getString("name"),
                         rs.getInt("amount"),
                         rs.getDouble("price"));
             }
@@ -71,7 +80,7 @@ public class ItemRepository implements IItemRepository {
 
             while(rs.next()){
                 Item item = new Item(rs.getInt("id"),
-                        rs.getString("itemName"),
+                        rs.getString("name"),
                         rs.getInt("amount"),
                         rs.getDouble("price"));
                 items.add(item);
