@@ -41,7 +41,7 @@ public class ItemController implements IItemController {
     }
     @Override
     public String deleteItem(String name) {
-        repo.deleteItem(name);
-        return "Item was removed";
+        Item item = repo.deleteItem(name);
+        return (item != null) ? item.toString() : "Item not found";
     }
 }

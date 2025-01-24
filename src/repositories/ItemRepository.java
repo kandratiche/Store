@@ -93,16 +93,13 @@ public class ItemRepository implements IItemRepository {
     }
 
     @Override
-    public void deleteProductByName(String name) {
-    }
-
-    public void deleteItem(String name) {
-        String sql = "DELETE FROM products WHERE name = ?";
-        try (Connection conn = db.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, name);
-            int rowsDeleted = stmt.executeUpdate();
+    public Item deleteItem(String name) {
+        String sql = "DELETE FROM items WHERE name = ?";
+        try {
+            Connection conn = db.getConnection();
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setString(1, name);
+            int rowsDeleted = st.executeUpdate();
             if (rowsDeleted > 0) {
                 System.out.println("Product with name \"" + name + "\" deleted successfully.");
             } else {
@@ -111,5 +108,6 @@ public class ItemRepository implements IItemRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return null;
     }
 }
