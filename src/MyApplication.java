@@ -1,6 +1,5 @@
 import controllers.interfaces.IItemController;
 
-import java.net.Socket;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -29,6 +28,7 @@ public class MyApplication {
                 switch (option) {
                     case 1: createItemMenu(); break;
                     case 2: getItemByIdMenu(); break;
+                    case 3: deleteItemMenu(); break;
                     default: return;
                 }
             } catch (InputMismatchException e){
@@ -45,6 +45,7 @@ public class MyApplication {
                 switch (option) {
                     case 1: getAllItemsMenu(); break;
                     case 2: getItemByIdMenu(); break;
+                    case 3: deleteItemMenu(); break;
                     default: return;
                 }
             } catch (InputMismatchException e){
@@ -100,9 +101,12 @@ public class MyApplication {
         System.out.println("Admin Menu");
         System.out.println("Select an option: ");
         System.out.println("1. Add Item");
-        System.out.println("2. Delete Item");
+        System.out.println("3. Delete Item");
         System.out.println("0. Exit");
         System.out.println("Enter your choice: ");
     }
-
+    private void deleteItemMenu() {
+        System.out.println("Enter item name: ");
+        String name = scanner.toString();
+    }
 }

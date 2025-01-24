@@ -92,4 +92,24 @@ public class ItemRepository implements IItemRepository {
         return  null;
     }
 
+    @Override
+    public void deleteProductByName(String name) {
+    }
+
+    public void deleteItem(String name) {
+        String sql = "DELETE FROM products WHERE name = ?";
+        try (Connection conn = db.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, name);
+            int rowsDeleted = stmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Product with name \"" + name + "\" deleted successfully.");
+            } else {
+                System.out.println("No product found with the name \"" + name + "\".");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
