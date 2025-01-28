@@ -1,11 +1,20 @@
+import controllers.UserController;
 import controllers.interfaces.IItemController;
+import controllers.interfaces.IUserController;
+
+import java.sql.SQLOutput;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class MyApplication {
-    private final IItemController controller;
+    private final IItemController itemController;
+    private final IUserController userController;
     private final Scanner scanner = new Scanner(System.in);
-    public MyApplication(IItemController controller) { this.controller = controller; }
+    public MyApplication(IItemController itemController, IUserController userController) {
+        this.itemController = itemController;
+        this.userController = userController;
+    }
+
 
     public void start() {
         while(true){
@@ -14,13 +23,18 @@ public class MyApplication {
     }
 
     private void auth(){
-        System.out.println("Enter the Username: ");
-        String username = scanner.nextLine();
+        System.out.println("Enter the Name: ");
+        String name = scanner.nextLine();
+
+        System.out.println("Enter the Surname: ");
+        String surname = scanner.nextLine();
 
         System.out.println("Enter the Password: ");
         String password = scanner.nextLine();
 
-        if(username.equals("admin") && password.equals("pass")){
+        boolean isAuthenticated = UserController.auth(name, surname,password);
+
+        if(isAuthenticated){
             mainMenuForAdmin();
             try{
                 int option = scanner.nextInt();
@@ -35,8 +49,8 @@ public class MyApplication {
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
-        } else if (!username.equals("admin") && !password.equals("pass")){
-            System.out.println("Invalid Username or Password, please try again");
+        } else if (!isAuthenticated){
+            System.out.println("Authentication failed.");
         } else {
             mainMenuForCustomer();
             try{
@@ -67,19 +81,19 @@ public class MyApplication {
         double price = scanner.nextDouble();
         scanner.nextLine();
 
-        String response = controller.createItem(itemName, amount, price);
+        String response = itemController.createItem(itemName, amount, price);
         System.out.println(response);
     }
 
     private void getItemByIdMenu() {
         System.out.println("Enter item id: ");
         int id = scanner.nextInt();
-        String response = controller.getItemById(id);
+        String response = itemController.getItemById(id);
         System.out.println(response);
     }
 
     private void getAllItemsMenu() {
-        String response = controller.getAllItems();
+        String response = itemController.getAllItems();
         System.out.println(response);
     }
 
@@ -108,7 +122,7 @@ public class MyApplication {
         scanner.nextLine();
         String name = scanner.nextLine();
 
-        String response = controller.deleteItem(name);
+        String response = itemController.deleteItem(name);
         System.out.println(response);
     }
 }
