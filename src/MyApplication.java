@@ -18,11 +18,12 @@ public class MyApplication {
 
     public void start() {
         while(true){
-            mainMenuForCustomer();
+            choiceMenu();
         }
     }
 
     private void auth(){
+        scanner.nextLine();
         System.out.println("Enter the Name: ");
         String name = scanner.nextLine();
 
@@ -66,7 +67,44 @@ public class MyApplication {
                 System.out.println(e.getMessage());
             }
         }
+    }
 
+    private void choiceMenu(){
+        System.out.println("1. Register");
+        System.out.println("2. Login");
+        System.out.println("Choose an option: ");
+        int option = scanner.nextInt();
+        switch (option) {
+            case 1:
+                reg();
+                break;
+            case 2:
+                auth();
+                break;
+        }
+    }
+
+    private void reg(){
+        scanner.nextLine();
+        System.out.println("***Register***\nEnter the name: ");
+        String name = scanner.nextLine();
+
+        System.out.println("***Register***\nEnter the surname: ");
+        String surname = scanner.nextLine();
+
+        System.out.println("***Register***\nEnter the password: ");
+        String password = scanner.nextLine();
+
+        boolean isExist = userController.auth(name, surname, password);
+        if(isExist) {
+            System.out.println("User already exists.");
+            choiceMenu();
+        }
+        else{
+            String response = userController.reg(name, surname, password);
+            System.out.println(response);
+            auth();
+        }
     }
 
     private void createItemMenu() {
