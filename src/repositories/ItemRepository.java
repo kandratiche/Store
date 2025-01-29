@@ -110,4 +110,21 @@ public class ItemRepository implements IItemRepository {
         }
         return null;
     }
+    @Override
+    public boolean updateItem(String name, int newAmount, double newPrice) {
+        try (Connection conn = db.getConnection()) {
+            String sql = "UPDATE items SET amount = ?, price = ? WHERE name = ?";
+            PreparedStatement st = conn.prepareStatement(sql);
+
+            st.setInt(1, newAmount);
+            st.setDouble(2, newPrice);
+            st.setString(3, name);
+
+            int rowsUpdated = st.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            System.out.println("SQL Error in updateItem: " + e.getMessage());
+        }
+        return false;
+    }
 }

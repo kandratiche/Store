@@ -11,4 +11,6 @@ public interface IItemRepository {
     Item getItemById(int id);
     List<Item> getAllItems();
     Item deleteItem(String name);
+    boolean updateItem(String name, int newAmount, double newPrice);
+
 }

@@ -5,4 +5,6 @@ public interface IItemController {
     String getItemById(int id);
     String getAllItems();
     String deleteItem(String name);
+    String updateItem(String name, int newAmount, double newPrice);
+
 }

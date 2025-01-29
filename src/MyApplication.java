@@ -18,11 +18,12 @@ public class MyApplication {
 
     public void start() {
         while(true){
-            auth();
+            choiceMenu();
         }
     }
 
     private void auth(){
+        scanner.nextLine();
         System.out.println("Enter the Name: ");
         String name = scanner.nextLine();
 
@@ -32,7 +33,7 @@ public class MyApplication {
         System.out.println("Enter the Password: ");
         String password = scanner.nextLine();
 
-        boolean isAuthenticated = UserController.auth(name, surname,password);
+        boolean isAuthenticated = userController.auth(name, surname,password);
 
         if(isAuthenticated){
             mainMenuForAdmin();
@@ -42,6 +43,7 @@ public class MyApplication {
                     case 1: createItemMenu(); break;
                     case 2: getItemByIdMenu(); break;
                     case 3: deleteItemMenu(); break;
+                    case 4: updateItemMenu(); break;
                     default: return;
                 }
             } catch (InputMismatchException e){
@@ -49,14 +51,15 @@ public class MyApplication {
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
-        } else if (!isAuthenticated){
-            System.out.println("Authentication failed.");
         } else {
+            System.out.println("Authentication failed.");
             mainMenuForCustomer();
             try{
                 int option = scanner.nextInt();
                 switch (option) {
                     case 1: getAllItemsMenu(); break;
+                    case 2: getItemByIdMenu(); break;
+                    case 3: auth(); break;
                     default: return;
                 }
             } catch (InputMismatchException e){
@@ -65,7 +68,44 @@ public class MyApplication {
                 System.out.println(e.getMessage());
             }
         }
+    }
 
+    private void choiceMenu(){
+        System.out.println("1. Register");
+        System.out.println("2. Login");
+        System.out.println("Choose an option: ");
+        int option = scanner.nextInt();
+        switch (option) {
+            case 1:
+                reg();
+                break;
+            case 2:
+                auth();
+                break;
+        }
+    }
+
+    private void reg(){
+        scanner.nextLine();
+        System.out.println("***Register***\nEnter the name: ");
+        String name = scanner.nextLine();
+
+        System.out.println("***Register***\nEnter the surname: ");
+        String surname = scanner.nextLine();
+
+        System.out.println("***Register***\nEnter the password: ");
+        String password = scanner.nextLine();
+
+        boolean isExist = userController.auth(name, surname, password);
+        if(isExist) {
+            System.out.println("User already exists.");
+            choiceMenu();
+        }
+        else{
+            String response = userController.reg(name, surname, password);
+            System.out.println(response);
+            auth();
+        }
     }
 
     private void createItemMenu() {
@@ -103,6 +143,7 @@ public class MyApplication {
         System.out.println("Select an option: ");
         System.out.println("1. Get All Item");
         System.out.println("2. Get Item By Id");
+        System.out.println("3. Enter on Admin Menu");
         System.out.println("0. Exit");
         System.out.println("Enter your choice: ");
     }
@@ -114,6 +155,7 @@ public class MyApplication {
         System.out.println("1. Add Item");
         System.out.println("2. Get item by Id");
         System.out.println("3. Delete Item");
+        System.out.println("4. Update Item");
         System.out.println("0. Exit");
         System.out.println("Enter your choice: ");
     }
@@ -125,4 +167,19 @@ public class MyApplication {
         String response = itemController.deleteItem(name);
         System.out.println(response);
     }
+    private void updateItemMenu() {
+        System.out.println("Enter item name to update: ");
+        scanner.nextLine();
+        String name = scanner.nextLine();
+
+        System.out.println("Enter new item amount: ");
+        int newAmount = scanner.nextInt();
+
+        System.out.println("Enter new item price: ");
+        double newPrice = scanner.nextDouble();
+
+        String response = itemController.updateItem(name, newAmount, newPrice);
+        System.out.println(response);
+    }
+
 }

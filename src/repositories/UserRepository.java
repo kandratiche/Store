@@ -1,24 +1,28 @@
+
 package repositories;
 
 import data.interfaces.IDB;
+import models.User;
 import repositories.interfaces.IUserRepository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class UserRepository implements IUserRepository {
 
     private final IDB db;
+
     public UserRepository(IDB db) {
         this.db = db;
     }
 
     @Override
-    public boolean auth(String name, String surname, String password){
+    public boolean auth(String name, String surname, String password) {
         Connection conn = null;
 
-        try{
+        try {
             conn = db.getConnection();
             String sql = "SELECT * FROM managers WHERE name = ? AND surname = ? AND password = ?";
             PreparedStatement st = conn.prepareStatement(sql);
@@ -31,11 +35,13 @@ public class UserRepository implements IUserRepository {
 
             return rs.next();
 
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try {
-                if(conn != null){ conn.close();}
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -43,4 +49,23 @@ public class UserRepository implements IUserRepository {
         return false;
     }
 
+    @Override
+    public boolean reg(User user) {
+        Connection conn = null;
+
+        try {
+            conn = db.getConnection();
+            String sql = "INSERT INTO managers(name, surname, password) VALUES(?, ?, ?)";
+            PreparedStatement st = conn.prepareStatement(sql);
+
+            st.setString(1, user.getName());
+            st.setString(2, user.getSurname());
+            st.setString(3, user.getPassword());
+            st.execute();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("SQLException: " + e.getMessage());
+        }
+        return false;
+    }
 }
