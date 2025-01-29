@@ -1,8 +1,9 @@
 package controllers;
 
+import controllers.interfaces.IUserController;
 import repositories.interfaces.IUserRepository;
 
-public class UserController {
+public class UserController implements IUserController {
 
     private final IUserRepository repo;
 

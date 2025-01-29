@@ -18,7 +18,7 @@ public class MyApplication {
 
     public void start() {
         while(true){
-            auth();
+            mainMenuForCustomer();
         }
     }
 
@@ -32,7 +32,7 @@ public class MyApplication {
         System.out.println("Enter the Password: ");
         String password = scanner.nextLine();
 
-        boolean isAuthenticated = UserController.auth(name, surname,password);
+        boolean isAuthenticated = userController.auth(name, surname,password);
 
         if(isAuthenticated){
             mainMenuForAdmin();
@@ -49,14 +49,15 @@ public class MyApplication {
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
-        } else if (!isAuthenticated){
-            System.out.println("Authentication failed.");
         } else {
+            System.out.println("Authentication failed.");
             mainMenuForCustomer();
             try{
                 int option = scanner.nextInt();
                 switch (option) {
                     case 1: getAllItemsMenu(); break;
+                    case 2: getItemByIdMenu(); break;
+                    case 3: auth(); break;
                     default: return;
                 }
             } catch (InputMismatchException e){
@@ -103,6 +104,7 @@ public class MyApplication {
         System.out.println("Select an option: ");
         System.out.println("1. Get All Item");
         System.out.println("2. Get Item By Id");
+        System.out.println("3. Enter on Admin Menu");
         System.out.println("0. Exit");
         System.out.println("Enter your choice: ");
     }
