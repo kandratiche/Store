@@ -39,6 +39,8 @@ public class MyApplication {
             mainMenuForAdmin();
             try{
                 int option = scanner.nextInt();
+                scanner.nextLine();
+
                 switch (option) {
                     case 1: createItemMenu(); break;
                     case 2: getItemByIdMenu(); break;
@@ -48,6 +50,7 @@ public class MyApplication {
                 }
             } catch (InputMismatchException e){
                 System.out.println("Input must be number: " + e.getMessage());
+                scanner.nextLine();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
@@ -56,6 +59,7 @@ public class MyApplication {
             mainMenuForCustomer();
             try{
                 int option = scanner.nextInt();
+                scanner.nextLine();
                 switch (option) {
                     case 1: getAllItemsMenu(); break;
                     case 2: getItemByIdMenu(); break;
@@ -74,7 +78,10 @@ public class MyApplication {
         System.out.println("1. Register");
         System.out.println("2. Login");
         System.out.println("Choose an option: ");
+
         int option = scanner.nextInt();
+        scanner.nextLine();
+
         switch (option) {
             case 1:
                 reg();
@@ -84,6 +91,7 @@ public class MyApplication {
                 break;
         }
     }
+
 
     private void reg(){
         scanner.nextLine();
