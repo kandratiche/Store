@@ -20,7 +20,6 @@ public class UserController implements IUserController {
     }
     public String reg(String name, String surname, String password) {
         User user = new User(name, surname, password);
-
         boolean newUser = repo.reg(user);
         return (newUser) ? "User was registered" : "User wasn't registered";
     }

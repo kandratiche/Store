@@ -1,8 +1,5 @@
-import controllers.UserController;
 import controllers.interfaces.IItemController;
 import controllers.interfaces.IUserController;
-
-import java.sql.SQLOutput;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -10,7 +7,6 @@ public class MyApplication {
     private final IItemController itemController;
     private final IUserController userController;
     private final Scanner scanner = new Scanner(System.in);
-
     public MyApplication(IItemController itemController, IUserController userController) {
         this.itemController = itemController;
         this.userController = userController;
@@ -18,118 +14,100 @@ public class MyApplication {
 
 
     public void start() {
-        while (true) {
-            choiceMenu();
+        while(true){
+            userRole();
         }
     }
 
-    private void auth() {
-        System.out.println("Enter the Name: ");
+    private void auth(){
+        scanner.nextLine();
+
+        System.out.println("Login\nEnter the Name: ");
         String name = scanner.nextLine();
 
-        System.out.println("Enter the Surname: ");
+        System.out.println("Login\nEnter the Surname: ");
         String surname = scanner.nextLine();
 
-        System.out.println("Enter the Password: ");
+        System.out.println("Login\nEnter the Password: ");
         String password = scanner.nextLine();
 
-        boolean isAuthenticated = userController.auth(name, surname, password);
+        boolean isAuthenticated = userController.auth(name, surname,password);
 
-        if (isAuthenticated) {
+        if(isAuthenticated){
             mainMenuForAdmin();
-            try {
+            try{
                 int option = scanner.nextInt();
-                scanner.nextLine();
-
                 switch (option) {
-                    case 1:
-                        createItemMenu();
-                        break;
-                    case 2:
-                        getItemByIdMenu();
-                        break;
-                    case 3:
-                        deleteItemMenu();
-                        break;
-                    case 4:
-                        updateItemMenu();
-                        break;
-                    case 5:
-                        mainMenuForCustomer();
-                        break;
-                    default:
-                        return;
+                    case 1: createItemMenu(); break;
+                    case 2: getItemByIdMenu(); break;
+                    case 3: deleteItemMenu(); break;
+                    case 4: updateItemMenu(); break;
+                    default: return;
                 }
-            } catch (InputMismatchException e) {
+            } catch (InputMismatchException e){
                 System.out.println("Input must be number: " + e.getMessage());
-                scanner.nextLine();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         } else {
             System.out.println("Authentication failed.");
             mainMenuForCustomer();
-            try {
+            try{
                 int option = scanner.nextInt();
-                scanner.nextLine();
                 switch (option) {
-                    case 1:
-                        getAllItemsMenu();
-                        break;
-                    case 2:
-                        getItemByIdMenu();
-                        break;
-                    case 3:
-                        buyItemMenu();
-                        break;
-                    case 4:
-                        auth();
-                        break;
-                    default:
-                        return;
+                    case 1: getAllItemsMenu(); mainMenuForCustomer();
+                    case 2: getItemByIdMenu(); break;
+                    case 3: auth(); break;
+                    default: return;
                 }
-            } catch (InputMismatchException e) {
+            } catch (InputMismatchException e){
                 System.out.println("Input must be number: " + e.getMessage());
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
+
     }
 
-    private void choiceMenu() {
-        System.out.println("1. Register");
-        System.out.println("2. Login");
+    private void userRole(){
         System.out.println("Choose an option: ");
-
+        System.out.println("1. Customer");
+        System.out.println("2. Manager");
         int option = scanner.nextInt();
-        scanner.nextLine();
         switch (option) {
-            case 1:
-                reg();
-                break;
-            case 2:
-                auth();
-                break;
+            case 1: mainMenuForCustomer(); break;
+            case 2: choiceMenu(); break;
+            default: return;
         }
     }
 
-    private void reg() {
+    private void choiceMenu(){
+        System.out.println("\nChoose an option: ");
+        System.out.println("1. Register");
+        System.out.println("2. Login");
+        int option = scanner.nextInt();
+        switch (option) {
+            case 1: reg(); break;
+            case 2: auth(); break;
+            default: return;
+        }
+    }
+
+    private void reg(){
+        System.out.println("Register\nEnter the Name: ");
         scanner.nextLine();
-        System.out.println("***Register***\nEnter the name: ");
         String name = scanner.nextLine();
-
-        System.out.println("***Register***\nEnter the surname: ");
+        System.out.println("Register\nEnter the Surname: ");
         String surname = scanner.nextLine();
-
-        System.out.println("***Register***\nEnter the password: ");
+        System.out.println("Register\nEnter the Password: ");
         String password = scanner.nextLine();
-
-        boolean isExist = userController.auth(name, surname, password);
-        if (isExist) {
+        boolean isExist = userController.auth(name, surname,password);
+        if(isExist){
             System.out.println("User already exists.");
             choiceMenu();
-        } else {
-            String response = userController.reg(name, surname, password);
+        }
+        else{
+            String response = userController.reg(name,surname,password);
             System.out.println(response);
             auth();
         }
@@ -162,25 +140,6 @@ public class MyApplication {
     private void getAllItemsMenu() {
         String response = itemController.getAllItems();
         System.out.println(response);
-
-        System.out.println("\nDo you want to add an item to the cart? (yes/no): ");
-        scanner.nextLine();
-        String choice = scanner.nextLine().trim().toLowerCase();
-
-        if (choice.equals("yes")) {
-            addToCartMenu();
-        }
-    }
-
-    private void addToCartMenu() {
-        System.out.println("Enter the item ID to add to cart: ");
-        int id = scanner.nextInt();
-
-        System.out.println("Enter amount: ");
-        int amount = scanner.nextInt();
-
-        String response = itemController.addToCart(id, amount);
-        System.out.println(response);
     }
 
     private void mainMenuForCustomer() {
@@ -189,10 +148,17 @@ public class MyApplication {
         System.out.println("Select an option: ");
         System.out.println("1. Get All Item");
         System.out.println("2. Get Item By Id");
-        System.out.println("3. Buy Item");
-        System.out.println("4. Enter on Admin Menu");
+        System.out.println("3. Enter on Admin Menu");
         System.out.println("0. Exit");
         System.out.println("Enter your choice: ");
+
+        int option = scanner.nextInt();
+        switch (option) {
+            case 1: getAllItemsMenu(); break;
+            case 2: getItemByIdMenu(); break;
+            case 3: auth(); break;
+            default: return;
+        }
     }
 
     private void mainMenuForAdmin() {
@@ -203,11 +169,9 @@ public class MyApplication {
         System.out.println("2. Get item by Id");
         System.out.println("3. Delete Item");
         System.out.println("4. Update Item");
-        System.out.println("5. Enter to Customer Menu");
         System.out.println("0. Exit");
         System.out.println("Enter your choice: ");
     }
-
     private void deleteItemMenu() {
         System.out.println("Enter item name: ");
         scanner.nextLine();
@@ -216,20 +180,6 @@ public class MyApplication {
         String response = itemController.deleteItem(name);
         System.out.println(response);
     }
-
-    private void buyItemMenu() {
-        System.out.println("Enter item name to buy: ");
-        scanner.nextLine();
-        String name = scanner.nextLine();
-
-        System.out.println("Enter quantity: ");
-        int quantity = scanner.nextInt();
-        scanner.nextLine();
-
-        String response = itemController.buyItem(name, quantity);
-        System.out.println(response);
-    }
-
     private void updateItemMenu() {
         System.out.println("Enter item name to update: ");
         scanner.nextLine();
@@ -244,4 +194,5 @@ public class MyApplication {
         String response = itemController.updateItem(name, newAmount, newPrice);
         System.out.println(response);
     }
+
 }
