@@ -10,6 +10,7 @@ public class MyApplication {
     private final IItemController itemController;
     private final IUserController userController;
     private final Scanner scanner = new Scanner(System.in);
+
     public MyApplication(IItemController itemController, IUserController userController) {
         this.itemController = itemController;
         this.userController = userController;
@@ -17,13 +18,12 @@ public class MyApplication {
 
 
     public void start() {
-        while(true){
+        while (true) {
             choiceMenu();
         }
     }
 
-    private void auth(){
-        scanner.nextLine();
+    private void auth() {
         System.out.println("Enter the Name: ");
         String name = scanner.nextLine();
 
@@ -33,23 +33,34 @@ public class MyApplication {
         System.out.println("Enter the Password: ");
         String password = scanner.nextLine();
 
-        boolean isAuthenticated = userController.auth(name, surname,password);
+        boolean isAuthenticated = userController.auth(name, surname, password);
 
-        if(isAuthenticated){
+        if (isAuthenticated) {
             mainMenuForAdmin();
-            try{
+            try {
                 int option = scanner.nextInt();
                 scanner.nextLine();
 
                 switch (option) {
-                    case 1: createItemMenu(); break;
-                    case 2: getItemByIdMenu(); break;
-                    case 3: deleteItemMenu(); break;
-                    case 4: updateItemMenu(); break;
-                    case 4: mainMenuForCustomer(); break;
-                    default: return;
+                    case 1:
+                        createItemMenu();
+                        break;
+                    case 2:
+                        getItemByIdMenu();
+                        break;
+                    case 3:
+                        deleteItemMenu();
+                        break;
+                    case 4:
+                        updateItemMenu();
+                        break;
+                    case 5:
+                        mainMenuForCustomer();
+                        break;
+                    default:
+                        return;
                 }
-            } catch (InputMismatchException e){
+            } catch (InputMismatchException e) {
                 System.out.println("Input must be number: " + e.getMessage());
                 scanner.nextLine();
             } catch (Exception e) {
@@ -58,17 +69,26 @@ public class MyApplication {
         } else {
             System.out.println("Authentication failed.");
             mainMenuForCustomer();
-            try{
+            try {
                 int option = scanner.nextInt();
                 scanner.nextLine();
                 switch (option) {
-                    case 1: getAllItemsMenu(); break;
-                    case 2: getItemByIdMenu(); break;
-                    case 3: buyItemMenu(); break;
-                    case 4: auth(); break;
-                    default: return;
+                    case 1:
+                        getAllItemsMenu();
+                        break;
+                    case 2:
+                        getItemByIdMenu();
+                        break;
+                    case 3:
+                        buyItemMenu();
+                        break;
+                    case 4:
+                        auth();
+                        break;
+                    default:
+                        return;
                 }
-            } catch (InputMismatchException e){
+            } catch (InputMismatchException e) {
                 System.out.println("Input must be number: " + e.getMessage());
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -76,14 +96,13 @@ public class MyApplication {
         }
     }
 
-    private void choiceMenu(){
+    private void choiceMenu() {
         System.out.println("1. Register");
         System.out.println("2. Login");
         System.out.println("Choose an option: ");
 
         int option = scanner.nextInt();
         scanner.nextLine();
-
         switch (option) {
             case 1:
                 reg();
@@ -94,7 +113,7 @@ public class MyApplication {
         }
     }
 
-    private void reg(){
+    private void reg() {
         scanner.nextLine();
         System.out.println("***Register***\nEnter the name: ");
         String name = scanner.nextLine();
@@ -106,11 +125,10 @@ public class MyApplication {
         String password = scanner.nextLine();
 
         boolean isExist = userController.auth(name, surname, password);
-        if(isExist) {
+        if (isExist) {
             System.out.println("User already exists.");
             choiceMenu();
-        }
-        else{
+        } else {
             String response = userController.reg(name, surname, password);
             System.out.println(response);
             auth();
@@ -189,6 +207,7 @@ public class MyApplication {
         System.out.println("0. Exit");
         System.out.println("Enter your choice: ");
     }
+
     private void deleteItemMenu() {
         System.out.println("Enter item name: ");
         scanner.nextLine();
@@ -197,6 +216,7 @@ public class MyApplication {
         String response = itemController.deleteItem(name);
         System.out.println(response);
     }
+
     private void buyItemMenu() {
         System.out.println("Enter item name to buy: ");
         scanner.nextLine();
@@ -224,3 +244,4 @@ public class MyApplication {
         String response = itemController.updateItem(name, newAmount, newPrice);
         System.out.println(response);
     }
+}
