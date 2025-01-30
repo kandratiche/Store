@@ -49,5 +49,9 @@ public class ItemController implements IItemController {
         boolean updated = repo.updateItem(name, newAmount, newPrice);
         return updated ? "Item updated successfully!" : "Failed to update item. Item with name '" + name + "' not found.";
     }
-
+    @Override
+    public String buyItem(String name, int quantity) {
+        boolean success = repo.buyItem(name, quantity);
+        return success ? "Purchase successful!" : "Purchase failed!";
+    }
 }

@@ -6,5 +6,5 @@ public interface IItemController {
     String getAllItems();
     String deleteItem(String name);
     String updateItem(String name, int newAmount, double newPrice);
-
+    String buyItem(String name, int quantity);
 }
