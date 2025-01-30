@@ -43,6 +43,7 @@ public class MyApplication {
                     case 1: createItemMenu(); break;
                     case 2: getItemByIdMenu(); break;
                     case 3: deleteItemMenu(); break;
+                    case 4: mainMenuForCustomer(); break;
                     default: return;
                 }
             } catch (InputMismatchException e){
@@ -134,6 +135,25 @@ public class MyApplication {
     private void getAllItemsMenu() {
         String response = itemController.getAllItems();
         System.out.println(response);
+
+        System.out.println("\nDo you want to add an item to the cart? (yes/no): ");
+        scanner.nextLine();
+        String choice = scanner.nextLine().trim().toLowerCase();
+
+        if (choice.equals("yes")) {
+            addToCartMenu();
+        }
+    }
+
+    private void addToCartMenu() {
+        System.out.println("Enter the item ID to add to cart: ");
+        int id = scanner.nextInt();
+
+        System.out.println("Enter amount: ");
+        int amount = scanner.nextInt();
+
+        String response = itemController.addToCart(id, amount);
+        System.out.println(response);
     }
 
     private void mainMenuForCustomer() {
@@ -154,6 +174,7 @@ public class MyApplication {
         System.out.println("1. Add Item");
         System.out.println("2. Get item by Id");
         System.out.println("3. Delete Item");
+        System.out.println("4. Enter to Customer Menu");
         System.out.println("0. Exit");
         System.out.println("Enter your choice: ");
     }

@@ -22,7 +22,6 @@ public class Main {
 
         MyApplication app = new MyApplication(itemController, userController);
         app.start();
-
         db.close();
     }
 }

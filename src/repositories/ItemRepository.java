@@ -68,7 +68,7 @@ public class ItemRepository implements IItemRepository {
     }
 
     @Override
-    public List<Item> getAllItems(){
+    public List<Item> getAllItems() {
         Connection conn = null;
 
         try{
@@ -89,7 +89,27 @@ public class ItemRepository implements IItemRepository {
         } catch (SQLException e){
             System.out.println("sql error getAllItems: " + e.getMessage());
         }
+        System.out.println("1. Add all items to cart.");
+
         return  null;
+    }
+    @Override
+    public boolean addToCart(int productId, int quantity) {
+        String sql = "INSERT INTO cart (product_id, quantity) VALUES (?, ?)";
+
+        try (Connection conn = db.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, productId);
+            stmt.setInt(2, quantity);
+            int rowsInserted = stmt.executeUpdate();
+
+            System.out.println("Item added to cart");
+
+        } catch (Exception e) {
+            System.err.println("Error adding to cart: " + e.getMessage());
+        }
+        return false;
     }
 
     @Override

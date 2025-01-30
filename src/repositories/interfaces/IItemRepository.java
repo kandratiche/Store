@@ -11,4 +11,5 @@ public interface IItemRepository {
     Item getItemById(int id);
     List<Item> getAllItems();
     Item deleteItem(String name);
+    boolean addToCart(int id, int amount);
 }
