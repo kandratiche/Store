@@ -45,6 +45,7 @@ public class MyApplication {
                     case 1: createItemMenu(); break;
                     case 2: getItemByIdMenu(); break;
                     case 3: deleteItemMenu(); break;
+                    case 4: updateItemMenu(); break;
                     case 4: mainMenuForCustomer(); break;
                     default: return;
                 }
@@ -63,7 +64,8 @@ public class MyApplication {
                 switch (option) {
                     case 1: getAllItemsMenu(); break;
                     case 2: getItemByIdMenu(); break;
-                    case 3: auth(); break;
+                    case 3: buyItemMenu(); break;
+                    case 4: auth(); break;
                     default: return;
                 }
             } catch (InputMismatchException e){
@@ -91,7 +93,6 @@ public class MyApplication {
                 break;
         }
     }
-
 
     private void reg(){
         scanner.nextLine();
@@ -170,7 +171,8 @@ public class MyApplication {
         System.out.println("Select an option: ");
         System.out.println("1. Get All Item");
         System.out.println("2. Get Item By Id");
-        System.out.println("3. Enter on Admin Menu");
+        System.out.println("3. Buy Item");
+        System.out.println("4. Enter on Admin Menu");
         System.out.println("0. Exit");
         System.out.println("Enter your choice: ");
     }
@@ -182,7 +184,8 @@ public class MyApplication {
         System.out.println("1. Add Item");
         System.out.println("2. Get item by Id");
         System.out.println("3. Delete Item");
-        System.out.println("4. Enter to Customer Menu");
+        System.out.println("4. Update Item");
+        System.out.println("5. Enter to Customer Menu");
         System.out.println("0. Exit");
         System.out.println("Enter your choice: ");
     }
@@ -194,4 +197,30 @@ public class MyApplication {
         String response = itemController.deleteItem(name);
         System.out.println(response);
     }
-}
+    private void buyItemMenu() {
+        System.out.println("Enter item name to buy: ");
+        scanner.nextLine();
+        String name = scanner.nextLine();
+
+        System.out.println("Enter quantity: ");
+        int quantity = scanner.nextInt();
+        scanner.nextLine();
+
+        String response = itemController.buyItem(name, quantity);
+        System.out.println(response);
+    }
+
+    private void updateItemMenu() {
+        System.out.println("Enter item name to update: ");
+        scanner.nextLine();
+        String name = scanner.nextLine();
+
+        System.out.println("Enter new item amount: ");
+        int newAmount = scanner.nextInt();
+
+        System.out.println("Enter new item price: ");
+        double newPrice = scanner.nextDouble();
+
+        String response = itemController.updateItem(name, newAmount, newPrice);
+        System.out.println(response);
+    }

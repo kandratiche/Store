@@ -130,4 +130,56 @@ public class ItemRepository implements IItemRepository {
         }
         return null;
     }
+    @Override
+    public boolean updateItem(String name, int newAmount, double newPrice) {
+        try (Connection conn = db.getConnection()) {
+            String sql = "UPDATE items SET amount = ?, price = ? WHERE name = ?";
+            PreparedStatement st = conn.prepareStatement(sql);
+
+            st.setInt(1, newAmount);
+            st.setDouble(2, newPrice);
+            st.setString(3, name);
+
+            int rowsUpdated = st.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            System.out.println("SQL Error in updateItem: " + e.getMessage());
+        }
+        return false;
+    }
+    @Override
+    public boolean buyItem(String name, int quantity) {
+        Connection conn = null;
+
+        try {
+            conn = db.getConnection();
+
+            String checkSql = "SELECT amount FROM items WHERE name = ?";
+            PreparedStatement checkSt = conn.prepareStatement(checkSql);
+            checkSt.setString(1, name);
+            ResultSet rs = checkSt.executeQuery();
+
+            if (rs.next()) {
+                int currentAmount = rs.getInt("amount");
+
+                if (currentAmount >= quantity) {
+                    String updateSql = "UPDATE items SET amount = amount - ? WHERE name = ?";
+                    PreparedStatement updateSt = conn.prepareStatement(updateSql);
+                    updateSt.setInt(1, quantity);
+                    updateSt.setString(2, name);
+                    updateSt.executeUpdate();
+
+                    return true;
+                } else {
+                    System.out.println("Not enough stock for " + name);
+                }
+            } else {
+                System.out.println("Item not found: " + name);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("SQL Error in buyItem: " + e.getMessage());
+        }
+        return false;
+    }
 }
