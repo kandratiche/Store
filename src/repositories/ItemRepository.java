@@ -3,7 +3,6 @@ package repositories;
 import data.interfaces.IDB;
 import models.Item;
 import repositories.interfaces.IItemRepository;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,13 +93,14 @@ public class ItemRepository implements IItemRepository {
         return  null;
     }
     @Override
-    public boolean addToCart(int id, int amount) {
-        String sql = "INSERT INTO cart (id, amount) VALUES (?, ?)";
+    public boolean addToCart(int id, String name, int amount) {
+        String sql = "UPDATE users SET cart = cart || ?::jsonb WHERE username = ?";
 
         try (Connection conn = db.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
+            stmt.setString(2, name);
             stmt.setInt(2, amount);
             int rowsInserted = stmt.executeUpdate();
 

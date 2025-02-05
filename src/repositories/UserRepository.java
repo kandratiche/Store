@@ -62,6 +62,7 @@ public class UserRepository implements IUserRepository {
             st.setString(2, user.getSurname());
             st.setString(3, user.getPassword());
             st.execute();
+            
             return true;
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
