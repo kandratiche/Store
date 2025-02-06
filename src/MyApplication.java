@@ -22,19 +22,16 @@ public class MyApplication {
     private void auth(){
         scanner.nextLine();
 
-        System.out.println("Login\nEnter the Name: ");
+        System.out.println("Login\nEnter the username: ");
         String name = scanner.nextLine();
-
-        System.out.println("Login\nEnter the Surname: ");
-        String surname = scanner.nextLine();
 
         System.out.println("Login\nEnter the Password: ");
         String password = scanner.nextLine();
 
-        boolean isAuthenticated = userController.auth(name, surname);
+        boolean isAuthenticated = userController.auth(name, password);
 
         if(isAuthenticated){
-            mainMenuForAdmin();
+            mainMenuForCustomer();
             try{
                 int option = scanner.nextInt();
                 switch (option) {
@@ -51,20 +48,7 @@ public class MyApplication {
             }
         } else {
             System.out.println("Authentication failed.");
-            mainMenuForCustomer();
-            try{
-                int option = scanner.nextInt();
-                switch (option) {
-                    case 1: getAllItemsMenu(); mainMenuForCustomer();
-                    case 2: getItemByIdMenu(); break;
-                    case 3: auth(); break;
-                    default: return;
-                }
-            } catch (InputMismatchException e){
-                System.out.println("Input must be number: " + e.getMessage());
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
+            choiceMenu();
         }
 
     }
