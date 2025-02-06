@@ -81,6 +81,7 @@ public class MyApplication {
         System.out.println("Register\nEnter the username: ");
         scanner.nextLine();
         String username = scanner.nextLine();
+
         System.out.println("Register\nEnter the password: ");
         String password = scanner.nextLine();
         System.out.println("Register\nEnter the Name: ");
