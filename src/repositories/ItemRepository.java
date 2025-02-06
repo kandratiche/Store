@@ -33,7 +33,7 @@ public class ItemRepository implements IItemRepository {
             st.execute();
             return true;
         } catch (SQLException e) {
-            System.out.println("sql error: " + e.getMessage());
+            System.out.println("Error to createItem Repository: " + e.getMessage());
         }
 
         return false;
@@ -60,7 +60,7 @@ public class ItemRepository implements IItemRepository {
             }
 
         } catch (SQLException e) {
-            System.out.println("sql error getItem: " + e.getMessage());
+            System.out.println("Error to getItemById Repository: " + e.getMessage());
         }
         return null;
 
@@ -86,21 +86,20 @@ public class ItemRepository implements IItemRepository {
             }
             return items;
         } catch (SQLException e){
-            System.out.println("sql error getAllItems: " + e.getMessage());
+            System.out.println("Error to getAllItems Repository: " + e.getMessage());
         }
         System.out.println("1. Add all items to cart.");
 
         return  null;
     }
     @Override
-    public boolean addToCart(int id, String name, int amount) {
+    public boolean addToCart(int id, int amount) {
         String sql = "UPDATE users SET cart = cart || ?::jsonb WHERE username = ?";
 
         try (Connection conn = db.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
-            stmt.setString(2, name);
             stmt.setInt(2, amount);
             int rowsInserted = stmt.executeUpdate();
 
@@ -182,4 +181,5 @@ public class ItemRepository implements IItemRepository {
         }
         return false;
     }
+
 }

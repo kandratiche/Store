@@ -19,17 +19,16 @@ public class UserRepository implements IUserRepository {
     }
 
     @Override
-    public boolean auth(String name, String surname, String password) {
+    public boolean auth(String username, String password) {
         Connection conn = null;
 
         try {
             conn = db.getConnection();
-            String sql = "SELECT * FROM managers WHERE name = ? AND surname = ? AND password = ?";
+            String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
             PreparedStatement st = conn.prepareStatement(sql);
 
-            st.setString(1, name);
-            st.setString(2, surname);
-            st.setString(3, password);
+            st.setString(1, username);
+            st.setString(2, password);
 
             ResultSet rs = st.executeQuery();
 

@@ -15,7 +15,7 @@ public class MyApplication {
 
     public void start() {
         while(true){
-            userRole();
+            choiceMenu();
         }
     }
 
@@ -31,7 +31,7 @@ public class MyApplication {
         System.out.println("Login\nEnter the Password: ");
         String password = scanner.nextLine();
 
-        boolean isAuthenticated = userController.auth(name, surname,password);
+        boolean isAuthenticated = userController.auth(name, surname);
 
         if(isAuthenticated){
             mainMenuForAdmin();
@@ -94,20 +94,22 @@ public class MyApplication {
     }
 
     private void reg(){
-        System.out.println("Register\nEnter the Name: ");
+        System.out.println("Register\nEnter the username: ");
         scanner.nextLine();
+        String username = scanner.nextLine();
+        System.out.println("Register\nEnter the password: ");
+        String password = scanner.nextLine();
+        System.out.println("Register\nEnter the Name: ");
         String name = scanner.nextLine();
         System.out.println("Register\nEnter the Surname: ");
         String surname = scanner.nextLine();
-        System.out.println("Register\nEnter the Password: ");
-        String password = scanner.nextLine();
-        boolean isExist = userController.auth(name, surname,password);
+        boolean isExist = userController.auth(username, password);
         if(isExist){
             System.out.println("User already exists.");
             choiceMenu();
         }
         else{
-            String response = userController.reg(name,surname,password);
+            String response = userController.reg(username, password, name, surname);
             System.out.println(response);
             auth();
         }
@@ -148,7 +150,8 @@ public class MyApplication {
         System.out.println("Select an option: ");
         System.out.println("1. Get All Item");
         System.out.println("2. Get Item By Id");
-        System.out.println("3. Enter on Admin Menu");
+        System.out.println("3. Add Item to Cart");
+        System.out.println("4. Enter on Admin Menu");
         System.out.println("0. Exit");
         System.out.println("Enter your choice: ");
 
@@ -156,9 +159,20 @@ public class MyApplication {
         switch (option) {
             case 1: getAllItemsMenu(); break;
             case 2: getItemByIdMenu(); break;
-            case 3: auth(); break;
+            case 3: addToCart(); break;
+            case 4: auth(); break;
             default: return;
         }
+    }
+
+    private void addToCart(){
+        System.out.println();
+        System.out.println("Enter item id: ");
+        int id = scanner.nextInt();
+        System.out.println("Enter item amount: ");
+        int amount = scanner.nextInt();
+        String response = itemController.addToCart(id, amount);
+        System.out.println(response);
     }
 
     private void mainMenuForAdmin() {
