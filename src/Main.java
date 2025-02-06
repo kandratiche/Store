@@ -4,7 +4,7 @@ import controllers.interfaces.IItemController;
 import controllers.interfaces.IUserController;
 import data.PostgreDB;
 import data.interfaces.IDB;
-import models.User;
+
 import repositories.ItemRepository;
 import repositories.UserRepository;
 import repositories.interfaces.IItemRepository;
