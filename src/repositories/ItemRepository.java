@@ -101,7 +101,8 @@ public class ItemRepository implements IItemRepository {
 
             stmt.setInt(1, id);
             stmt.setInt(2, amount);
-            int rowsInserted = stmt.executeUpdate();
+
+            stmt.executeUpdate();
 
             System.out.println("Item added to cart");
 
