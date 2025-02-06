@@ -19,8 +19,9 @@ public class UserRepository implements IUserRepository {
     }
 
     @Override
-    public boolean auth(String username, String password) {
+    public Integer auth(String username, String password) {
         Connection conn = null;
+        Integer userId = null;
 
         try {
             conn = db.getConnection();
@@ -32,7 +33,9 @@ public class UserRepository implements IUserRepository {
 
             ResultSet rs = st.executeQuery();
 
-            return rs.next();
+            if(rs.next()){
+                return rs.getInt("id");
+            };
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -45,7 +48,7 @@ public class UserRepository implements IUserRepository {
                 e.printStackTrace();
             }
         }
-        return false;
+        return userId;
     }
 
     @Override

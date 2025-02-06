@@ -12,7 +12,7 @@ public class UserController implements IUserController {
         this.repo = repo;
     }
 
-    public boolean auth(String username, String password) {
+    public Integer auth(String username, String password) {
         if (repo == null) {
             throw new IllegalStateException("Repository is not set.");
         }

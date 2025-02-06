@@ -7,6 +7,7 @@ public class MyApplication {
     private final IItemController itemController;
     private final IUserController userController;
     private final Scanner scanner = new Scanner(System.in);
+    private Integer userId = null;
     public MyApplication(IItemController itemController, IUserController userController) {
         this.itemController = itemController;
         this.userController = userController;
@@ -28,9 +29,12 @@ public class MyApplication {
         System.out.println("Login\nEnter the Password: ");
         String password = scanner.nextLine();
 
-        boolean isAuthenticated = userController.auth(name, password);
 
-        if(isAuthenticated){
+
+        Integer isAuthenticated = userController.auth(name, password);
+
+        if(isAuthenticated != null){
+            userId = isAuthenticated;
             mainMenuForCustomer();
             try{
                 int option = scanner.nextInt();
@@ -88,8 +92,8 @@ public class MyApplication {
         String name = scanner.nextLine();
         System.out.println("Register\nEnter the Surname: ");
         String surname = scanner.nextLine();
-        boolean isExist = userController.auth(username, password);
-        if(isExist){
+        Integer isExist = userController.auth(username, password);
+        if(isExist != null){
             System.out.println("User already exists.");
             choiceMenu();
         }
@@ -151,10 +155,14 @@ public class MyApplication {
     }
 
     private void addToCart(){
-        System.out.println();
-        System.out.println("Enter user id: ");
-        int userId = scanner.nextInt();
 
+        if(userId == null){
+            System.out.println("You need to log in first");
+            auth();
+            return;
+        }
+
+        System.out.println();
         System.out.println("Enter item id: ");
         int itemId = scanner.nextInt();
 
