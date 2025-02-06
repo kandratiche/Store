@@ -152,11 +152,16 @@ public class MyApplication {
 
     private void addToCart(){
         System.out.println();
+        System.out.println("Enter user id: ");
+        int userId = scanner.nextInt();
+
         System.out.println("Enter item id: ");
-        int id = scanner.nextInt();
+        int itemId = scanner.nextInt();
+
         System.out.println("Enter item amount: ");
         int amount = scanner.nextInt();
-        String response = itemController.addToCart(id, amount);
+
+        String response = itemController.addToCart(userId, itemId, amount);
         System.out.println(response);
     }
 

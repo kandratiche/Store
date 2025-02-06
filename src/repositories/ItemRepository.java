@@ -93,21 +93,47 @@ public class ItemRepository implements IItemRepository {
         return  null;
     }
     @Override
-    public boolean addToCart(int id, int amount) {
-        String sql = "UPDATE users SET cart = cart || ?::jsonb WHERE username = ?";
+    public boolean addToCart(int userId, int itemId, int amount) {
+        String checkSql = "SELECT amount FROM items WHERE id = ?";
+        String getCartSql = "SELECT cart FROM users WHERE id = ?";
+        String updateCartSql = "UPDATE users SET cart = ? WHERE id = ?";
 
-        try (Connection conn = db.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = db.getConnection()) {
+            conn.setAutoCommit(false);
 
-            stmt.setInt(1, id);
-            stmt.setInt(2, amount);
+            try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+                checkStmt.setInt(1, itemId);
+                ResultSet rs = checkStmt.executeQuery();
+                if (!rs.next() || rs.getInt("amount") < amount) {
+                    System.out.println("Not enough stock or item does not exist.");
+                    conn.rollback();
+                    return false;
+                }
+            }
 
-            stmt.executeUpdate();
+            String cart = "";
+            try (PreparedStatement getCartStmt = conn.prepareStatement(getCartSql)) {
+                getCartStmt.setInt(1, userId);
+                ResultSet rs = getCartStmt.executeQuery();
+                if (rs.next()) {
+                    cart = rs.getString("cart");
+                }
+            }
 
-            System.out.println("Item added to cart");
-
-        } catch (Exception e) {
-            System.err.println("Error adding to cart: " + e.getMessage());
+            if (cart == null || cart.isEmpty()) {
+                cart = itemId + ":" + amount;
+            } else {
+                cart += "," + itemId + ":" + amount;
+            }
+            try (PreparedStatement updateStmt = conn.prepareStatement(updateCartSql)) {
+                updateStmt.setString(1, cart);
+                updateStmt.setInt(2, userId);
+                updateStmt.executeUpdate();
+            }
+            conn.commit();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("SQL Error in addToCart: " + e.getMessage());
         }
         return false;
     }

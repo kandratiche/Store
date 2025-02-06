@@ -41,12 +41,10 @@ public class ItemController implements IItemController {
     }
 
     @Override
-    public String addToCart(int id, int amount) {
-        boolean added = repo.addToCart(id, amount);
+    public String addToCart(int userId, int itemId, int amount) {
+        boolean added = repo.addToCart(userId, itemId, amount);
         return added ? "Item added to cart" : "Failed to add item to cart";
     }
-
-
     @Override
     public String deleteItem(String name) {
         Item item = repo.deleteItem(name);
