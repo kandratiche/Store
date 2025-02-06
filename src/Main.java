@@ -12,7 +12,7 @@ import repositories.interfaces.IUserRepository;
 
 public class Main {
     public static void main(String[] args) {
-        IDB db = new PostgreDB("jdbc:postgresql://localhost:5432", "postgres", "1234", "Store");
+        IDB db = new PostgreDB("jdbc:postgresql://localhost:5423", "postgres", "1234", "Store");
 
         IUserRepository userRepository = new UserRepository(db);
         IItemRepository itemRepository = new ItemRepository(db);
@@ -23,5 +23,8 @@ public class Main {
         MyApplication app = new MyApplication(itemController, userController);
         app.start();
         db.close();
+
+        // test
+
     }
 }

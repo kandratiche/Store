@@ -94,14 +94,14 @@ public class ItemRepository implements IItemRepository {
         return  null;
     }
     @Override
-    public boolean addToCart(int productId, int quantity) {
-        String sql = "INSERT INTO cart (product_id, quantity) VALUES (?, ?)";
+    public boolean addToCart(int id, int amount) {
+        String sql = "INSERT INTO cart (id, amount) VALUES (?, ?)";
 
         try (Connection conn = db.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, productId);
-            stmt.setInt(2, quantity);
+            stmt.setInt(1, id);
+            stmt.setInt(2, amount);
             int rowsInserted = stmt.executeUpdate();
 
             System.out.println("Item added to cart");
