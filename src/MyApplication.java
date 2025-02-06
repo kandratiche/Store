@@ -7,7 +7,6 @@ public class MyApplication {
     private final IItemController itemController;
     private final IUserController userController;
     private final Scanner scanner = new Scanner(System.in);
-    private Integer userId = null;
     public MyApplication(IItemController itemController, IUserController userController) {
         this.itemController = itemController;
         this.userController = userController;
@@ -70,9 +69,9 @@ public class MyApplication {
     }
 
     private void choiceMenu(){
-        System.out.println("\nChoose an option: ");
         System.out.println("1. Register");
         System.out.println("2. Login");
+        System.out.println("Choose an option: ");
         int option = scanner.nextInt();
         switch (option) {
             case 1: reg(); break;
@@ -141,6 +140,7 @@ public class MyApplication {
         System.out.println("2. Get Item By Id");
         System.out.println("3. Add Item to Cart");
         System.out.println("4. Enter on Admin Menu");
+        System.out.println("5. Buy Item");
         System.out.println("0. Exit");
         System.out.println("Enter your choice: ");
 
@@ -150,6 +150,7 @@ public class MyApplication {
             case 2: getItemByIdMenu(); break;
             case 3: addToCart(); break;
             case 4: auth(); break;
+            case 5: buyItemMenu(); break;
             default: return;
         }
     }
@@ -206,5 +207,15 @@ public class MyApplication {
         String response = itemController.updateItem(name, newAmount, newPrice);
         System.out.println(response);
     }
+    private void buyItemMenu() {
+        System.out.println("Enter item name: ");
+        String name = scanner.nextLine();
+        scanner.nextLine();
 
+        System.out.println("Enter item amount: ");
+        int amount = scanner.nextInt();
+
+        String response = itemController.buyItem(name, amount);
+        System.out.println(response);
+    }
 }

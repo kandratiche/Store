@@ -1,4 +1,5 @@
 package controllers.interfaces;
+
 public interface IItemController {
 
     String createItem(String name, int amount, double price);
@@ -7,5 +8,5 @@ public interface IItemController {
     String addToCart(int userId, int itemId, int amount);
     String deleteItem(String name);
     String updateItem(String name, int newAmount, double newPrice);
-    String buyItem(String name, int quantity);
+    String buyItem(String name, int amount);
 }

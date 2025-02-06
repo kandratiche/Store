@@ -15,5 +15,5 @@ public interface IItemRepository {
 
     Item deleteItem(String name);
     boolean updateItem(String name, int newAmount, double newPrice);
-    boolean buyItem(String name, int quantity);
+    boolean buyItem(String name, int amount);
 }
