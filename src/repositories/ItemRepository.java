@@ -122,6 +122,7 @@ public class ItemRepository implements IItemRepository {
 
             if (cart == null || cart.isEmpty()) {
                 cart = itemId + ":" + amount;
+                System.out.println(cart);
             } else {
                 cart += "," + itemId + ":" + amount;
             }
@@ -129,8 +130,11 @@ public class ItemRepository implements IItemRepository {
                 updateStmt.setString(1, cart);
                 updateStmt.setInt(2, userId);
                 updateStmt.executeUpdate();
+                conn.commit();
             }
-            conn.commit();
+            catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
             return true;
         } catch (SQLException e) {
             System.out.println("SQL Error in addToCart: " + e.getMessage());
