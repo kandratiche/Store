@@ -178,7 +178,7 @@ public class ItemRepository implements IItemRepository {
         return false;
     }
     @Override
-    public boolean buyItem(String name, int quantity) {
+    public boolean buyItem(String name, int amount) {
         Connection conn = null;
 
         try {
@@ -192,10 +192,10 @@ public class ItemRepository implements IItemRepository {
             if (rs.next()) {
                 int currentAmount = rs.getInt("amount");
 
-                if (currentAmount >= quantity) {
+                if (currentAmount >= amount) {
                     String updateSql = "UPDATE items SET amount = amount - ? WHERE name = ?";
                     PreparedStatement updateSt = conn.prepareStatement(updateSql);
-                    updateSt.setInt(1, quantity);
+                    updateSt.setInt(1, amount);
                     updateSt.setString(2, name);
                     updateSt.executeUpdate();
 
@@ -212,5 +212,4 @@ public class ItemRepository implements IItemRepository {
         }
         return false;
     }
-
 }
