@@ -178,28 +178,73 @@ public class ItemRepository implements IItemRepository {
         return false;
     }
     @Override
-    public boolean buyItem(String name, int amount) {
+    public boolean buyItem(String name, int amount, int id) {
         Connection conn = null;
+        PreparedStatement checkSt = null;
+        PreparedStatement updateSt = null;
+        PreparedStatement balanceSt = null;
+        PreparedStatement deductBalanceSt = null;
+        PreparedStatement addInventorySt = null;
+        ResultSet rs = null;
 
         try {
             conn = db.getConnection();
+            if (conn == null) {
+                System.out.println("Database connection failed!");
+                return false;
+            }
 
-            String checkSql = "SELECT amount FROM items WHERE name = ?";
-            PreparedStatement checkSt = conn.prepareStatement(checkSql);
-            checkSt.setString(1, name);
-            ResultSet rs = checkSt.executeQuery();
+            String checkSql = "SELECT amount, price FROM items WHERE TRIM(LOWER(name)) = TRIM(LOWER(?))";
+            checkSt = conn.prepareStatement(checkSql);
+            checkSt.setString(1, name.trim().toLowerCase());
+            rs = checkSt.executeQuery();
 
             if (rs.next()) {
                 int currentAmount = rs.getInt("amount");
+                double price = rs.getDouble("price");
 
                 if (currentAmount >= amount) {
-                    String updateSql = "UPDATE items SET amount = amount - ? WHERE name = ?";
-                    PreparedStatement updateSt = conn.prepareStatement(updateSql);
-                    updateSt.setInt(1, amount);
-                    updateSt.setString(2, name);
-                    updateSt.executeUpdate();
+                    double totalCost = price * amount;
 
-                    return true;
+                    String balanceSql = "SELECT balance FROM users WHERE id = ?";
+                    balanceSt = conn.prepareStatement(balanceSql);
+                    balanceSt.setInt(1, id);
+                    ResultSet balanceRs = balanceSt.executeQuery();
+
+                    if (balanceRs.next()) {
+                        double balance = balanceRs.getDouble("balance");
+
+                        if (balance >= totalCost) {
+                            String updateSql = "UPDATE items SET amount = amount - ? WHERE name = ?";
+                            updateSt = conn.prepareStatement(updateSql);
+                            updateSt.setInt(1, amount);
+                            updateSt.setString(2, name);
+                            int rowsUpdated = updateSt.executeUpdate();
+
+                            String deductBalanceSql = "UPDATE users SET balance = balance - ? WHERE id = ?";
+                            deductBalanceSt = conn.prepareStatement(deductBalanceSql);
+                            deductBalanceSt.setDouble(1, totalCost);
+                            deductBalanceSt.setInt(2, id);
+                            deductBalanceSt.executeUpdate();
+
+                            String addInventorySql = "INSERT INTO inventory (user_id, item_name, amount) VALUES (?, ?, ?) " +
+                                    "ON DUPLICATE KEY UPDATE amount = amount + VALUES(amount)";
+                            addInventorySt = conn.prepareStatement(addInventorySql);
+                            addInventorySt.setInt(1, id);
+                            addInventorySt.setString(2, name);
+                            addInventorySt.setInt(3, amount);
+                            addInventorySt.executeUpdate();
+
+                            if (rowsUpdated > 0) {
+                                System.out.println("Purchase successful for " + name);
+                                return true;
+                            } else {
+                                System.out.println("Purchase failed.");
+                            }
+                        } else {
+                            System.out.println("Insufficient balance.");
+                        }
+                    }
                 } else {
                     System.out.println("Not enough stock for " + name);
                 }
@@ -208,8 +253,21 @@ public class ItemRepository implements IItemRepository {
             }
 
         } catch (SQLException e) {
-            System.out.println("SQL Error in buyItem: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (checkSt != null) checkSt.close();
+                if (updateSt != null) updateSt.close();
+                if (balanceSt != null) balanceSt.close();
+                if (deductBalanceSt != null) deductBalanceSt.close();
+                if (addInventorySt != null) addInventorySt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return false;
     }
+
 }

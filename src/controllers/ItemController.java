@@ -1,9 +1,13 @@
 package controllers;
 
 import controllers.interfaces.IItemController;
+import data.PostgreDB;
 import models.Item;
 import repositories.interfaces.IItemRepository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 public class ItemController implements IItemController {
@@ -57,7 +61,45 @@ public class ItemController implements IItemController {
     }
 
     @Override
-    public String buyItem(String name, int amount) {
-        return "";
+    public boolean buyItem(String name, int amount, int id) {
+        return repo.buyItem(name, amount, id);
     }
+    public boolean addBalance(int id, double amount) {
+        Connection conn = null;
+        PreparedStatement updateSt = null;
+
+        try {
+            PostgreDB db = null;
+            conn = db.getConnection();
+            if (conn == null) {
+                System.out.println("Database connection failed!");
+                return false;
+            }
+
+            // Update user balance
+            String updateSql = "UPDATE users SET balance = balance + ? WHERE id = ?";
+            updateSt = conn.prepareStatement(updateSql);
+            updateSt.setDouble(1, amount);
+            updateSt.setInt(2, id);
+            int rowsUpdated = updateSt.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                System.out.println("Balance updated successfully.");
+                return true;
+            } else {
+                System.out.println("Failed to update balance. User not found.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (updateSt != null) updateSt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
 }

@@ -7,6 +7,8 @@ public class MyApplication {
     private final IItemController itemController;
     private final IUserController userController;
     private final Scanner scanner = new Scanner(System.in);
+    private Integer userId = null;
+    private int id;
     public MyApplication(IItemController itemController, IUserController userController) {
         this.itemController = itemController;
         this.userController = userController;
@@ -33,7 +35,7 @@ public class MyApplication {
         Integer isAuthenticated = userController.auth(name, password);
 
         if(isAuthenticated != null){
-            userId = isAuthenticated;
+            Integer userId = isAuthenticated;
             mainMenuForCustomer();
             try{
                 int option = scanner.nextInt();
@@ -69,6 +71,7 @@ public class MyApplication {
     }
 
     private void choiceMenu(){
+        System.out.println("---Manager Menu---");
         System.out.println("1. Register");
         System.out.println("2. Login");
         System.out.println("Choose an option: ");
@@ -141,6 +144,7 @@ public class MyApplication {
         System.out.println("3. Add Item to Cart");
         System.out.println("4. Enter on Admin Menu");
         System.out.println("5. Buy Item");
+        System.out.println("6. Add balance");
         System.out.println("0. Exit");
         System.out.println("Enter your choice: ");
 
@@ -151,6 +155,7 @@ public class MyApplication {
             case 3: addToCart(); break;
             case 4: auth(); break;
             case 5: buyItemMenu(); break;
+            case 6: addBalanceMenu(); break;
             default: return;
         }
     }
@@ -214,8 +219,18 @@ public class MyApplication {
 
         System.out.println("Enter item amount: ");
         int amount = scanner.nextInt();
+        scanner.nextLine();
 
-        String response = itemController.buyItem(name, amount);
-        System.out.println(response);
+        boolean success = itemController.buyItem(name, amount, id);
+        System.out.println(success ? "Item purchased successfully!" : "Failed to buy item.");
     }
+    private void addBalanceMenu() {
+        System.out.println("Enter amount to add: ");
+        double amount = scanner.nextDouble();
+        scanner.nextLine(); // Consume newline
+
+        boolean success = itemController.addBalance(id, amount);
+        System.out.println(success ? "Balance added successfully!" : "Failed to add balance.");
+    }
+
 }
