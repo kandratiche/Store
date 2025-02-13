@@ -3,6 +3,8 @@ package repositories;
 import data.interfaces.IDB;
 import models.Item;
 import repositories.interfaces.IItemRepository;
+
+import javax.xml.transform.Result;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -186,6 +188,7 @@ public class ItemRepository implements IItemRepository {
         PreparedStatement deductBalanceSt = null;
         PreparedStatement addInventorySt = null;
         ResultSet rs = null;
+        String inv = "";
 
         try {
             conn = db.getConnection();
@@ -194,9 +197,9 @@ public class ItemRepository implements IItemRepository {
                 return false;
             }
 
-            String checkSql = "SELECT amount, price FROM items WHERE TRIM(LOWER(name)) = TRIM(LOWER(?))";
+            String checkSql = "SELECT amount, price FROM items WHERE name = ?";
             checkSt = conn.prepareStatement(checkSql);
-            checkSt.setString(1, name.trim().toLowerCase());
+            checkSt.setString(1, name);
             rs = checkSt.executeQuery();
 
             if (rs.next()) {
@@ -215,34 +218,47 @@ public class ItemRepository implements IItemRepository {
 
                     if (balanceRs.next()) {
                         double balance = balanceRs.getDouble("balance");
-
                         if (balance >= totalCost) {
-                            String updateSql = "UPDATE items SET amount = amount - ? WHERE name = ?";
-                            updateSt = conn.prepareStatement(updateSql);
+                            String removeItems = "UPDATE items SET amount = amount - ? WHERE name = ?";
+                            updateSt = conn.prepareStatement(removeItems);
                             updateSt.setInt(1, amount);
                             updateSt.setString(2, name);
                             int rowsUpdated = updateSt.executeUpdate();
 
-                            String deductBalanceSql = "UPDATE users SET balance = balance - ? WHERE id = ?";
-                            deductBalanceSt = conn.prepareStatement(deductBalanceSql);
+                            String removeBalance = "UPDATE users SET balance = balance - ? WHERE id = ?";
+                            deductBalanceSt = conn.prepareStatement(removeBalance);
                             deductBalanceSt.setDouble(1, totalCost);
                             deductBalanceSt.setInt(2, id);
                             deductBalanceSt.executeUpdate();
 
-                            String addInventorySql = "INSERT INTO inventory (user_id, item_name, amount) VALUES (?, ?, ?) " +
-                                    "ON DUPLICATE KEY UPDATE amount = amount + VALUES(amount)";
-                            addInventorySt = conn.prepareStatement(addInventorySql);
-                            addInventorySt.setInt(1, id);
-                            addInventorySt.setString(2, name);
-                            addInventorySt.setInt(3, amount);
-                            addInventorySt.executeUpdate();
+                            String selectInv = "SELECT inventory FROM users WHERE id = ?";
+                            String updateInv = "UPDATE users SET inventory = ? WHERE id = ?";
 
-                            if (rowsUpdated > 0) {
-                                System.out.println("Purchase successful for " + name);
-                                return true;
-                            } else {
-                                System.out.println("Purchase failed.");
+                            PreparedStatement selectInvSt = conn.prepareStatement(selectInv);
+                            selectInvSt.setInt(1, id);
+                            ResultSet invRs = selectInvSt.executeQuery();
+
+                            if (invRs.next()) {
+                                inv = invRs.getString("inventory");
                             }
+
+                            if (inv == null || inv.isEmpty()) {
+                                inv = "Item Name: " + name + "Amount: " + amount;
+                                System.out.println(inv);
+                            } else {
+                                inv += ", Item Name: " + name + "Amount: " + amount;
+                            }
+
+                            try(PreparedStatement updateInvSt = conn.prepareStatement(updateInv)){
+                                updateInvSt.setString(1, inv);
+                                updateInvSt.setInt(2, id);
+                                updateInvSt.executeUpdate();
+                                conn.commit();
+                            }
+                            catch (SQLException e) {
+                                System.out.println(e.getMessage());
+                            }
+
                         } else {
                             System.out.println("Insufficient balance.");
                         }

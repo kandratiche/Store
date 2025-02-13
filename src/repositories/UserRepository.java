@@ -72,4 +72,28 @@ public class UserRepository implements IUserRepository {
         }
         return false;
     }
+
+
+    public boolean addBalance(int id, double balance){
+        Connection conn = null;
+
+        try{
+            conn = db.getConnection();
+
+            String sql = "UPDATE users SET balance = ? WHERE id = ?";
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setDouble(1, balance);
+            st.setInt(2, id);
+
+            int rowsUpdated = st.executeUpdate();
+            return rowsUpdated > 0;
+
+        } catch (SQLException e){
+            System.out.println("SQLException: " + e.getMessage());
+        }
+
+        return false;
+
+    }
+
 }
