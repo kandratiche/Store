@@ -6,7 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class PostgreDB implements IDB {
-
+    private static PostgreDB instance;
     private Connection connection;
 
     private String host;
@@ -19,6 +19,44 @@ public class PostgreDB implements IDB {
         setUsername(username);
         setPassword(password);
         setDbName(dbName);
+    }
+
+    public static PostgreDB getInstance(String host, String username, String password, String dbName) {
+        if(instance == null) {
+            synchronized (PostgreDB.class) {
+                if (instance == null) {
+                    instance = new PostgreDB(host, username, password, dbName);
+                }
+            }
+        }
+        return instance;
+    }
+
+    @Override
+    public Connection getConnection() {
+        String connectionUrl = host + "/" + dbName;
+        try{
+            if(connection == null || connection.isClosed()) {
+                Class.forName("org.postgresql.Driver");
+                connection = DriverManager.getConnection(connectionUrl, username, password);
+            }
+        }
+        catch(Exception e){
+            System.out.println("Failed to connect to database: " + e.getMessage());
+        }
+        return connection;
+    }
+
+    @Override
+    public void close() {
+        if(connection != null) {
+            try{
+                connection.close();
+                connection = null;
+            } catch (Exception e) {
+                System.out.println("Failed to close connection: " + e.getMessage());
+            }
+        }
     }
 
     public String getHost() {
@@ -53,33 +91,6 @@ public class PostgreDB implements IDB {
         this.dbName = dbName;
     }
 
-    @Override
-    public Connection getConnection() {
-        String connectionUrl = host + "/" + dbName;
-        try{
-            if(connection != null && !connection.isClosed()){
-                return connection;
-            }
 
-            Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection(connectionUrl, username, password);
-            return connection;
-        }
-        catch(Exception e){
-            System.out.println("Failed to connect to database: " + e.getMessage());
-        }
-        return null;
-    }
-
-    @Override
-    public void close() {
-        if(connection != null) {
-            try{
-                connection.close();
-            } catch (Exception e) {
-                System.out.println("Failed to close connection: " + e.getMessage());
-            }
-        }
-    }
 
 }
