@@ -3,8 +3,7 @@ package controllers;
 import controllers.interfaces.IItemController;
 import data.PostgreDB;
 import models.Item;
-import repositories.interfaces.IItemRepository;
-
+import services.ItemService;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -12,17 +11,19 @@ import java.util.List;
 
 public class ItemController implements IItemController {
 
-    private final IItemRepository repo;
+    private final ItemService itemService;
 
-    public ItemController(IItemRepository repo) {
-        this.repo = repo;
+    public ItemController(ItemService itemService) {
+        this.itemService = itemService;
     }
+
 
     @Override
     public String createItem( String name, int amount, double price) {
         Item item = new Item(name, amount, price);
 
-        boolean created = repo.createItem(item);
+        boolean created = itemService.createItem(item.getItemName(), item.getAmount(), item.getPrice());
+
 
         return (created) ? "Item was created" : "Item creation failed";
 
@@ -30,13 +31,13 @@ public class ItemController implements IItemController {
 
     @Override
     public String getItemById(int id) {
-        Item item = repo.getItemById(id);
+        Item item = itemService.getItemById(id);
         return (item != null) ? item.toString() : "Item not found";
     }
 
     @Override
     public String getAllItems() {
-        List<Item> items = repo.getAllItems();
+        List<Item> items = itemService.getAllItems();
         StringBuilder response = new StringBuilder();
         for (Item item : items) {
             response.append(item.toString()).append("\n");
@@ -46,13 +47,13 @@ public class ItemController implements IItemController {
 
     @Override
     public String addToCart(int userId, int itemId, int amount) {
-        boolean added = repo.addToCart(userId, itemId, amount);
+        boolean added = itemService.addToCart(userId, itemId, amount);
         return added ? "Item added to cart" : "Failed to add item to cart";
     }
     @Override
     public String deleteItem(String name) {
-        Item item = repo.deleteItem(name);
-        return (item != null) ? item.toString() : "Item not found";
+        boolean deleted = itemService.deleteItem(name);
+        return deleted ? "Item deleted" : "Item not found";
     }
 
     @Override
@@ -62,7 +63,7 @@ public class ItemController implements IItemController {
 
     @Override
     public boolean buyItem(String name, int amount, int id) {
-        return repo.buyItem(name, amount, id);
+        return itemService.buyItem(name, amount, id);
     }
     public boolean addBalance(int id, double amount) {
         Connection conn = null;
