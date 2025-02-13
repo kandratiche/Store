@@ -44,6 +44,9 @@ public class User {
     }
 
     public void setUsername(String username) {
+        if(username == null || username.trim().isEmpty()){
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
         this.username = username;
     }
 
@@ -52,6 +55,9 @@ public class User {
     }
 
     public void setPassword(String password) {
+        if (password.length() < 6) {
+            throw new IllegalArgumentException("Password must be at least 6 characters");
+        }
         this.password = password;
     }
 
@@ -68,6 +74,9 @@ public class User {
     }
 
     public void setName(String name) {
+        if(name == null || name.trim().isEmpty()){
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
         this.name = name;
     }
 
@@ -76,6 +85,9 @@ public class User {
     }
 
     public void setSurname(String surname) {
+        if(surname == null || surname.trim().isEmpty()){
+            throw new IllegalArgumentException("Surname cannot be null or empty");
+        }
         this.surname = surname;
     }
 }
