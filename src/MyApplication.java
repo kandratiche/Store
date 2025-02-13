@@ -56,18 +56,6 @@ public class MyApplication {
 
     }
 
-    private void userRole(){
-        System.out.println("Choose an option: ");
-        System.out.println("1. Customer");
-        System.out.println("2. Manager");
-        int option = scanner.nextInt();
-        switch (option) {
-            case 1: mainMenuForCustomer(userId); break;
-            case 2: choiceMenu(); break;
-            default: return;
-        }
-    }
-
     private void choiceMenu(){
         System.out.println("---Manager Menu---");
         System.out.println("1. Register");
@@ -132,7 +120,14 @@ public class MyApplication {
     }
 
     private void getAllItemsMenu() {
-        String response = itemController.getAllItems();
+        System.out.println("1. Sort by price");
+        System.out.println("2. Sort by price (reversed)");
+        System.out.println("3. Sort by name");
+        System.out.println("4. Sort by quantity");
+        System.out.println("Chooce sorting method: ");
+
+        int choice = scanner.nextInt();
+        String response = itemController.getAllItems(choice);
         System.out.println(response);
     }
 
