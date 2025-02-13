@@ -35,13 +35,13 @@ public class Item {
     }
 
     public int getAmount() {
-        if(amount <= 0){
-            throw new IllegalArgumentException("Amount cannot be less than 0 or equal to 0");
-        }
         return amount;
     }
 
     public void setAmount(int amount) {
+        if(amount <= 0){
+            throw new IllegalArgumentException("Amount cannot be less than 0 or equal to 0");
+        }
         this.amount = amount;
     }
 
