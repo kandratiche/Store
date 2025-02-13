@@ -74,7 +74,7 @@ public class MyApplication {
         scanner.nextLine();
         String username = scanner.nextLine();
 
-        System.out.println("Register\nEnter the password: ");
+        System.out.println("Register\nEnter the password (at least 6 characters): ");
         String password = scanner.nextLine();
         System.out.println("Register\nEnter the Name: ");
         String name = scanner.nextLine();

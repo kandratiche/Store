@@ -28,10 +28,16 @@ public class Item {
     }
 
     public void setItemName(String itemName) {
+        if(itemName == null || itemName.trim().isEmpty()){
+            throw new IllegalArgumentException("Item name cannot be null or empty");
+        }
         this.name = itemName;
     }
 
     public int getAmount() {
+        if(amount <= 0){
+            throw new IllegalArgumentException("Amount cannot be less than 0 or equal to 0");
+        }
         return amount;
     }
 
@@ -44,6 +50,9 @@ public class Item {
     }
 
     public void setPrice(double price) {
+        if(price < 0){
+            throw new IllegalArgumentException("Price cannot be equal to 0");
+        }
         this.price = price;
     }
 
