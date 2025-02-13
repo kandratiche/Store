@@ -90,7 +90,6 @@ public class ItemRepository implements IItemRepository {
         } catch (SQLException e){
             System.out.println("Error to getAllItems Repository: " + e.getMessage());
         }
-        System.out.println("1. Add all items to cart.");
 
         return  null;
     }

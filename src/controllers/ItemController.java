@@ -7,6 +7,7 @@ import services.ItemService;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Comparator;
 import java.util.List;
 
 public class ItemController implements IItemController {
@@ -36,8 +37,27 @@ public class ItemController implements IItemController {
     }
 
     @Override
-    public String getAllItems() {
+    public String getAllItems(int choice) {
+
         List<Item> items = itemService.getAllItems();
+
+        switch (choice) {
+            case 1:
+                items.sort(Comparator.comparing(Item::getPrice));
+                break;
+            case 2:
+                items.sort(Comparator.comparing(Item::getPrice).reversed());
+                break;
+            case 3:
+                items.sort(Comparator.comparing(Item::getItemName));
+                break;
+            case 4:
+                items.sort(Comparator.comparing(Item::getAmount).reversed());
+                break;
+            default:
+                System.out.println("Invalid choice");
+        }
+
         StringBuilder response = new StringBuilder();
         for (Item item : items) {
             response.append(item.toString()).append("\n");
