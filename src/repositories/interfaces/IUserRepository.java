@@ -7,4 +7,6 @@ public interface IUserRepository {
 
     boolean reg(User user);
 
+    boolean addBalance(int id, double amount);
+
 }

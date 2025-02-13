@@ -158,7 +158,7 @@ public class MyApplication {
             case 2: getItemByIdMenu(); break;
             case 3: addToCart(userId); break;
             case 4: auth(); break;
-            case 5: buyItemMenu(); break;
+            case 5: buyItemMenu(userId); break;
             case 6: addBalanceMenu(); break;
             default: return;
         }
@@ -216,25 +216,31 @@ public class MyApplication {
         String response = itemController.updateItem(name, newAmount, newPrice);
         System.out.println(response);
     }
-    private void buyItemMenu() {
+    private void buyItemMenu(int userId) {
+        scanner.nextLine();
         System.out.println("Enter item name: ");
         String name = scanner.nextLine();
-        scanner.nextLine();
 
         System.out.println("Enter item amount: ");
         int amount = scanner.nextInt();
         scanner.nextLine();
 
-        boolean success = itemController.buyItem(name, amount, id);
+        System.out.println("user id" + userId);
+
+
+        boolean success = itemController.buyItem(name, amount, userId);
         System.out.println(success ? "Item purchased successfully!" : "Failed to buy item.");
     }
     private void addBalanceMenu() {
+        System.out.println("Enter a user id: ");
+        int userId = scanner.nextInt();
+        scanner.nextLine();
+
         System.out.println("Enter amount to add: ");
         double amount = scanner.nextDouble();
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine();
 
-        boolean success = itemController.addBalance(id, amount);
-        System.out.println(success ? "Balance added successfully!" : "Failed to add balance.");
+        boolean success = userController.addBalance(userId, amount);
     }
 
 }

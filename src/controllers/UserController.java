@@ -24,4 +24,12 @@ public class UserController implements IUserController {
         boolean newUser = repo.reg(user);
         return (newUser) ? "User was registered" : "User wasn't registered";
     }
+
+
+    public boolean addBalance(int id, double amount){
+        boolean updated = repo.addBalance(id, amount);
+        System.out.println((updated) ? "Success" : "Not Success");
+        return (updated) ? true : false;
+    }
+
 }
