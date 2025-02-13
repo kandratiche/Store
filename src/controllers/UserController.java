@@ -12,15 +12,15 @@ public class UserController implements IUserController {
         this.repo = repo;
     }
 
-    public Integer auth(String username, String password) {
+    public User auth(String username, String password) {
         if (repo == null) {
             throw new IllegalStateException("Repository is not set.");
         }
         return repo.auth(username, password);
     }
 
-    public String reg(String username, String password, String name, String surname) {
-        User user = new User(username, password, name, surname);
+    public String reg(String username, String password, String name, String surname, String role) {
+        User user = new User(username, password, name, surname, role);
         boolean newUser = repo.reg(user);
         return (newUser) ? "User was registered" : "User wasn't registered";
     }

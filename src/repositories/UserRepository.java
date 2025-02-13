@@ -19,13 +19,13 @@ public class UserRepository implements IUserRepository {
     }
 
     @Override
-    public Integer auth(String username, String password) {
+    public User auth(String username, String password) {
         Connection conn = null;
-        Integer userId = null;
+        User user = null;
 
         try {
             conn = db.getConnection();
-            String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+            String sql = "SELECT id, role FROM users WHERE username = ? AND password = ?";
             PreparedStatement st = conn.prepareStatement(sql);
 
             st.setString(1, username);
@@ -34,7 +34,9 @@ public class UserRepository implements IUserRepository {
             ResultSet rs = st.executeQuery();
 
             if(rs.next()){
-                return rs.getInt("id");
+                int id = rs.getInt("id");
+                String role = rs.getString("role");
+                user = new User(id, role);
             };
 
         } catch (Exception e) {
@@ -48,7 +50,7 @@ public class UserRepository implements IUserRepository {
                 e.printStackTrace();
             }
         }
-        return userId;
+        return user;
     }
 
     @Override
@@ -57,13 +59,14 @@ public class UserRepository implements IUserRepository {
 
         try {
             conn = db.getConnection();
-            String sql = "INSERT INTO users(username, password, name, surname) VALUES(?, ?, ?, ?)";
+            String sql = "INSERT INTO users(username, password, name, surname, role) VALUES(?, ?, ?, ?, ?)";
             PreparedStatement st = conn.prepareStatement(sql);
 
             st.setString(1, user.getUsername());
             st.setString(2, user.getPassword());
             st.setString(3, user.getName());
             st.setString(4, user.getSurname());
+            st.setString(5, user.getRole());
             st.execute();
             
             return true;

@@ -1,6 +1,7 @@
 import controllers.UserController;
 import controllers.interfaces.IItemController;
 import controllers.interfaces.IUserController;
+import models.User;
 
 import java.sql.SQLOutput;
 import java.util.InputMismatchException;
@@ -34,26 +35,19 @@ public class MyApplication {
         String password = scanner.nextLine();
 
 
-        Integer isAuthenticated = userController.auth(name, password);
+        User isAuthenticated = userController.auth(name, password);
         System.out.println("IsAuthenticated: " + isAuthenticated);
 
         if(isAuthenticated != null){
-            Integer userId = isAuthenticated;
-            System.out.println("User ID: " + userId);
-            mainMenuForCustomer(userId);
-            try{
-                int option = scanner.nextInt();
-                switch (option) {
-                    case 1: createItemMenu(); break;
-                    case 2: getItemByIdMenu(); break;
-                    case 3: deleteItemMenu(); break;
-                    case 4: updateItemMenu(); break;
-                    default: return;
-                }
-            } catch (InputMismatchException e){
-                System.out.println("Input must be number: " + e.getMessage());
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
+            Integer userId = isAuthenticated.getId();
+            String role = isAuthenticated.getRole();
+
+            if("Customer".equals(role)){
+                mainMenuForCustomer(userId);
+            } else if("Manager".equals(role)){
+                mainMenuForAdmin();
+            } else {
+                System.out.println("Invalid role");
             }
         } else {
             System.out.println("Authentication failed.");
@@ -98,13 +92,16 @@ public class MyApplication {
         String name = scanner.nextLine();
         System.out.println("Register\nEnter the Surname: ");
         String surname = scanner.nextLine();
-        Integer isExist = userController.auth(username, password);
+
+        String role = "Customer";
+
+        User isExist = userController.auth(username, password);
         if(isExist != null){
             System.out.println("User already exists.");
             choiceMenu();
         }
         else{
-            String response = userController.reg(username, password, name, surname);
+            String response = userController.reg(username, password, name, surname, role);
             System.out.println(response);
             auth();
         }
@@ -148,7 +145,6 @@ public class MyApplication {
         System.out.println("3. Add Item to Cart");
         System.out.println("4. Enter on Admin Menu");
         System.out.println("5. Buy Item");
-        System.out.println("6. Add balance");
         System.out.println("0. Exit");
         System.out.println("Enter your choice: ");
 
@@ -159,7 +155,6 @@ public class MyApplication {
             case 3: addToCart(userId); break;
             case 4: auth(); break;
             case 5: buyItemMenu(userId); break;
-            case 6: addBalanceMenu(); break;
             default: return;
         }
     }
@@ -191,8 +186,20 @@ public class MyApplication {
         System.out.println("2. Get item by Id");
         System.out.println("3. Delete Item");
         System.out.println("4. Update Item");
+        System.out.println("5. Add balance");
         System.out.println("0. Exit");
         System.out.println("Enter your choice: ");
+
+        int option = scanner.nextInt();
+
+        switch (option) {
+            case 1: createItemMenu(); break;
+            case 2: getItemByIdMenu(); break;
+            case 3: deleteItemMenu(); break;
+            case 4: updateItemMenu(); break;
+            case 5: addBalanceMenu(); break;
+            default: return;
+        }
     }
     private void deleteItemMenu() {
         System.out.println("Enter item name: ");
