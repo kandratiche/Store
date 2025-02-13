@@ -10,7 +10,7 @@ public class MyApplication {
     private final IItemController itemController;
     private final IUserController userController;
     private final Scanner scanner = new Scanner(System.in);
-    private Integer userId = null;
+    private Integer userId = 0;
     private int id;
     public MyApplication(IItemController itemController, IUserController userController) {
         this.itemController = itemController;
@@ -34,12 +34,13 @@ public class MyApplication {
         String password = scanner.nextLine();
 
 
-
         Integer isAuthenticated = userController.auth(name, password);
+        System.out.println("IsAuthenticated: " + isAuthenticated);
 
         if(isAuthenticated != null){
             Integer userId = isAuthenticated;
-            mainMenuForCustomer();
+            System.out.println("User ID: " + userId);
+            mainMenuForCustomer(userId);
             try{
                 int option = scanner.nextInt();
                 switch (option) {
@@ -67,7 +68,7 @@ public class MyApplication {
         System.out.println("2. Manager");
         int option = scanner.nextInt();
         switch (option) {
-            case 1: mainMenuForCustomer(); break;
+            case 1: mainMenuForCustomer(userId); break;
             case 2: choiceMenu(); break;
             default: return;
         }
@@ -138,7 +139,7 @@ public class MyApplication {
         System.out.println(response);
     }
 
-    private void mainMenuForCustomer() {
+    private void mainMenuForCustomer(int userId) {
         System.out.println();
         System.out.println("!!!Store!!!");
         System.out.println("Select an option: ");
@@ -155,7 +156,7 @@ public class MyApplication {
         switch (option) {
             case 1: getAllItemsMenu(); break;
             case 2: getItemByIdMenu(); break;
-            case 3: addToCart(); break;
+            case 3: addToCart(userId); break;
             case 4: auth(); break;
             case 5: buyItemMenu(); break;
             case 6: addBalanceMenu(); break;
@@ -163,9 +164,9 @@ public class MyApplication {
         }
     }
 
-    private void addToCart(){
+    private void addToCart(int userId){
 
-        if(userId == null){
+        if(userId == 0){
             System.out.println("You need to log in first");
             auth();
             return;

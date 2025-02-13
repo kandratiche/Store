@@ -121,10 +121,10 @@ public class ItemRepository implements IItemRepository {
             }
 
             if (cart == null || cart.isEmpty()) {
-                cart = itemId + ":" + amount;
+                cart = "Item Id:" + itemId + ", Amount: " + amount;
                 System.out.println(cart);
             } else {
-                cart += "," + itemId + ":" + amount;
+                cart += ", Item Id:" + itemId + ", Amount:" + amount;
             }
             try (PreparedStatement updateStmt = conn.prepareStatement(updateCartSql)) {
                 updateStmt.setString(1, cart);
@@ -201,7 +201,9 @@ public class ItemRepository implements IItemRepository {
 
             if (rs.next()) {
                 int currentAmount = rs.getInt("amount");
+                System.out.println("Current Amount is: " + currentAmount);
                 double price = rs.getDouble("price");
+                System.out.println("Current Price is: " + price);
 
                 if (currentAmount >= amount) {
                     double totalCost = price * amount;
